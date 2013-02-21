@@ -74,6 +74,16 @@ class View
     private $serializerGroups;
 
     /**
+     * @var bool
+     */
+    private $serializerMaxDepth;
+
+    /**
+     * @var bool
+     */
+    private $serializerMultiple;
+
+    /**
      *
      * @var array
      */
@@ -188,6 +198,30 @@ class View
     public function setSerializerGroups($serializerGroups)
     {
         $this->serializerGroups = $serializerGroups;
+
+        return $this;
+    }
+
+    /**
+     * set the serializer multiple setting
+     *
+     * @return View
+     */
+    public function setSerializerMultiple()
+    {
+        $this->serializerMultiple;
+
+        return $this;
+    }
+
+    /**
+     * set the serializer maxDepth setting
+     *
+     * @return View
+     */
+    public function setSerializerMaxDepth()
+    {
+        $this->serializerMaxDepth;
 
         return $this;
     }
@@ -425,6 +459,26 @@ class View
     public function getSerializerGroups()
     {
         return $this->serializerGroups;
+    }
+
+    /**
+     * get the serializer multiple setting
+     *
+     * @return bool multiple setting
+     */
+    public function getSerializerMultiple()
+    {
+        return $this->serializerMultiple;
+    }
+
+    /**
+     * get the serializer maxDepth setting
+     *
+     * @return bool maxDepth setting
+     */
+    public function getSerializerMaxDepth()
+    {
+        return $this->serializerMaxDepth;
     }
 
     /**

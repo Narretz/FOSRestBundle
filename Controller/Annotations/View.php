@@ -35,6 +35,11 @@ class View extends Template
     protected $serializerGroups;
 
     /**
+     * @var bool
+     */
+    protected $serializerMultiple;
+
+    /**
      * Returns the annotation alias name.
      *
      * @return string
@@ -90,10 +95,26 @@ class View extends Template
     }
 
     /**
+     * @var bool
+     */
+    public function setSerializerMultiple($serializerMultiple)
+    {
+        $this->serializerMultiple = $serializerMultiple;
+    }
+
+    /**
      * @return array
      */
     public function getSerializerGroups()
     {
         return $this->serializerGroups;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getSerializerMultiple()
+    {
+        return $this->serializerMultiple;
     }
 }
