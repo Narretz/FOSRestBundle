@@ -132,11 +132,10 @@ class ViewHandler extends ContainerAware implements ViewHandlerInterface
      * configuration if the form instance has errors.
      *
      * @param View $view view instance
-     * @param mixed $content
      *
      * @return int HTTP status code
      */
-    protected function getStatusCode(View $view, $content = null)
+    protected function getStatusCode(View $view)
     {
         if (null !== ($code = $view->getStatusCode())) {
             return $code;
@@ -155,7 +154,7 @@ class ViewHandler extends ContainerAware implements ViewHandlerInterface
             return $this->failedValidationCode;
         }
 
-        return null !== $content ? Codes::HTTP_OK : $this->emptyContentCode;
+        return null !== $data ? Codes::HTTP_OK : $this->emptyContentCode;
     }
 
     /**
@@ -192,15 +191,25 @@ class ViewHandler extends ContainerAware implements ViewHandlerInterface
         $serializer = $this->container->get('fos_rest.serializer');
 
         if ($view && $serializer instanceof Serializer) {
+            $multiple = $view->getSerializerMultiple();
+            $maxDepth = $view->getSerializerMaxDepth();
             $groups = $view->getSerializerGroups() ?: $this->container->getParameter('fos_rest.serializer.exclusion_strategy.groups');
             $version = $view->getSerializerVersion() ?: $this->container->getParameter('fos_rest.serializer.exclusion_strategy.version');
 
-            if ($groups && $version) {
-                $serializer->setExclusionStrategy(new GroupsVersionExclusionStrategy($groups, $version));
-            } elseif ($groups) {
+            if ($multiple) {
+                $serializer->setExclusionStrategy(new ChainExclusionStrategy);
+            }
+
+            if ($groups) {
                 $serializer->setGroups($groups);
-            } elseif ($version) {
+            }
+
+            if ($version) {
                 $serializer->setVersion($version);
+            }
+
+            if ($maxDepth) {
+                $serializer->setMaxDepth(true);
             }
 
             $callback = $view->getSerializerCallback();
@@ -263,16 +272,14 @@ class ViewHandler extends ContainerAware implements ViewHandlerInterface
      */
     public function createRedirectResponse(View $view, $location, $format)
     {
-        $content = null;
+        $code = isset($this->forceRedirects[$format])
+            ? $this->forceRedirects[$format] : $this->getStatusCode($view);
+
         $response = $view->getResponse();
         if ('html' === $format && isset($this->forceRedirects[$format])) {
             $redirect = new RedirectResponse($location);
-            $content = $redirect->getContent();
-            $response->setContent($content);
+            $response->setContent($redirect->getContent());
         }
-
-        $code = isset($this->forceRedirects[$format])
-            ? $this->forceRedirects[$format] : $this->getStatusCode($view, $content);
 
         $response->setStatusCode($code);
         $response->headers->set('Location', $location);
@@ -360,7 +367,7 @@ class ViewHandler extends ContainerAware implements ViewHandlerInterface
         }
 
         $response = $view->getResponse();
-        $response->setStatusCode($this->getStatusCode($view, $content));
+        $response->setStatusCode($this->getStatusCode($view));
 
         if (null !== $content) {
             $response->setContent($content);
