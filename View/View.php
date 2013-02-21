@@ -204,24 +204,24 @@ class View
 
     /**
      * set the serializer multiple setting
-     *
+     * @param bool $serializerMultiple
      * @return View
      */
-    public function setSerializerMultiple()
+    public function setSerializerMultiple($serializerMultiple)
     {
-        $this->serializerMultiple;
+        $this->serializerMultiple = $serializerMultiple;
 
         return $this;
     }
 
     /**
      * set the serializer maxDepth setting
-     *
+     * @param bool $serializerMaxDepth
      * @return View
      */
-    public function setSerializerMaxDepth()
+    public function setSerializerMaxDepth($serializerMaxDepth)
     {
-        $this->serializerMaxDepth;
+        $this->serializerMaxDepth = $serializerMaxDepth;
 
         return $this;
     }

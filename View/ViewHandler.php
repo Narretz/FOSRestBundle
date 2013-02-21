@@ -192,9 +192,9 @@ class ViewHandler extends ContainerAware implements ViewHandlerInterface
 
         if ($view && $serializer instanceof Serializer) {
             $multiple = $view->getSerializerMultiple();
-            $maxDepth = $view->getSerializerMaxDepth();
             $groups = $view->getSerializerGroups() ?: $this->container->getParameter('fos_rest.serializer.exclusion_strategy.groups');
             $version = $view->getSerializerVersion() ?: $this->container->getParameter('fos_rest.serializer.exclusion_strategy.version');
+            $maxDepth = $view->getSerializerMaxDepth();
 
             if ($multiple) {
                 $serializer->setExclusionStrategy(new ChainExclusionStrategy);
@@ -209,7 +209,7 @@ class ViewHandler extends ContainerAware implements ViewHandlerInterface
             }
 
             if ($maxDepth) {
-                $serializer->setMaxDepth(true);
+                $serializer->setMaxDepth($maxDepth);
             }
 
             $callback = $view->getSerializerCallback();
